@@ -1,10 +1,13 @@
 const admin = require('./admin')
 
 module.exports = app => {
-    app.get(admin(app.api.houses.get))
-    app.get(admin(app.api.clients.get))
+    app.get(app.api.houses.get)
+    app.get(app.api.clients.get)
 
-    app.post('/regadm', app.api.admin.save)
+    app.route('/regactions')
+        .post(app.api.actions.save)
+
+    //app.post('/regadm', app.api.admin.save)
 
 
     app.route('/houses')
