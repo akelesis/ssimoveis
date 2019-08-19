@@ -5,32 +5,53 @@
     <form action="" class="house-form">
       <div class="input-group">
         <label for="title">Titulo da casa</label>
-        <input type="text" class="input-group" name="title" id="title"/>
+        <input type="text" class="input-group" name="title" id="title" v-model="houseInfo.title"/>
       </div>
 
       <div class="input-group">
         <label for="type" class="mt-1">Tipo de transação</label>
-        <select name="type" id="type">
+        <select name="type" id="type" v-model="houseInfo.transaction">
           <option value="">Selecione o tipo</option>
           <option value="venda">Venda</option>
           <option value="Aluguel">Aluguel</option>
         </select>
       </div>
       <div class="input-group">
+        <label for="type" class="mt-1">Tipo do imovel</label>
+        <select name="type" id="type" v-model="houseInfo.type">
+          <option value="">Selecione o tipo</option>
+          <option value="Casa">Casa</option>
+          <option value="Apartamento">Apartamento</option>
+          <option value="Terreno">Terreno</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="type" class="mt-1">Área do imóvel</label>
+        <select name="type" id="type" v-model="houseInfo.area">
+          <option value="" selected>Selecione a área</option>
+          <option value="Zona Rural">Zona Rural</option>
+          <option value="Urbano">Urbano</option>
+        </select>
+      </div>
+      <div class="input-group">
         <label for="value" class="mt-1">Valor</label>
-        <input type="number" min=0 class="input-group" name="value" id="value"/>
+        <input type="number" min=0 class="input-group" name="value" id="value" v-model="houseInfo.price"/>
       </div>
       <div class="input-group">
         <label for="owner" class="mt-1">Nome do proprietário</label>
-        <input type="text" class="input-group" name="owner" id="owner"/>
+        <input type="text" class="input-group" name="owner" id="owner" v-model="clientInfo.name"/>
       </div>
       <div class="input-group">
         <label for="email-owner" class="mt-1">Email do proprietário</label>
-        <input type="email" class="input-group" name="email-owner" id="email-owner"/>
+        <input type="email" class="input-group" name="email-owner" id="email-owner" v-model="clientInfo.email" />
       </div>
       <div class="input-group">
         <label for="cel-owner" class="mt-1">Telefone do proprietário</label>
-        <input type="text" class="input-group" name="cel-owner" id="cel-owner"/>
+        <input type="text" class="input-group" name="cel-owner" id="cel-owner" v-model="clientInfo.telephone" />
+      </div>
+      <div class="input-group">
+        <label for="cel-owner" class="mt-1">Bairro</label>
+        <input type="text" class="input-group" name="neighborhood" id="neighborhood" v-model="neighborhood.name"/>
       </div>
       <div class="input-group description-area">
         <label for="house-description" class="mt-3">Descrição</label>
@@ -40,7 +61,7 @@
         <label for="house-img-upload" class="mt-3">Selecione as imagens</label>
         <input type="file" name="img" id="house-img-upload" multiple>
       </div>
-      <button type="button" class="panel-btn">Salvar</button>
+      <button type="button" class="panel-btn" @click="saveHouse">Salvar</button>
     </form>
     
 
@@ -52,10 +73,48 @@
 </template>
 
 <script>
+import baseApiUrl from '@/global'
+import axios from 'axios'
 export default {
   data(){
-    return{}
+    return{
+      houseInfo: {},
+      clientInfo: {},
+      neighborhood: {},
+    }
   },
+
+  methods: {
+    saveHouse(){
+      axios.post(`${baseApiUrl}/neighborhood`, this.neighborhood)
+        .then(res => {
+          this.houseInfo.neighborhood = res.data
+        })
+        .catch(err => {
+          alert(err)
+        })
+
+      axios.post(`${baseApiUrl}/clients`, this.clientInfo)
+        .then(res => {
+          this.houseInfo.idClient = res.data
+        })
+        .catch(err => {
+          alert(err)
+        })
+
+      this.houseInfo.price = parseFloat(this.houseInfo.price)
+
+      console.log(this.houseInfo)
+
+      axios.post(`${baseApiUrl}/houses`, this.houseInfo)
+        .then(_ => {
+          alert('Casa cadastrada com sucesso!')
+        })
+        .catch(err => {
+          alert(err)
+        }) 
+    }
+  }
 }
 </script>
 
