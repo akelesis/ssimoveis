@@ -1,7 +1,7 @@
 module.exports = app =>{
     const {existsOrError} = app.api.validation
 
-    const save = async (req, res) =>{
+    const save = (req, res) =>{
         const houseInfo = {...req.body}
 
         
@@ -15,6 +15,7 @@ module.exports = app =>{
             existsOrError(houseInfo.price, 'Valor do imóvel não informado!')
             existsOrError(houseInfo.type, 'Tipo do imóvel não informado')
             existsOrError(houseInfo.area, 'Zona do imóvel não informada')
+            existsOrError(houseInfo.neighborhood, 'Bairro do imóvel não informado')
             existsOrError(houseInfo.transaction, 'Tipo de transação do imóvel não informada')
         }
         catch(err){
@@ -26,14 +27,14 @@ module.exports = app =>{
             app.db('houses')
                 .update(houseInfo)
                 .where({id: houseInfo.id})
-                .then(_ => res.status(201).send())
-                .catch(err => res.status(500).send(err))
+                /* .then(_ => res.status(201).send())
+                .catch(err => res.status(500).send(err)) */
         }
         else{
             app.db('houses')
                 .insert(houseInfo)
-                .then(_ => res.status(201).send())
-                .catch(err => res.status(500).send(err))
+                /* .then(_ => res.status(201).send())
+                .catch(err => res.status(500).send(err)) */
         }
     }
 

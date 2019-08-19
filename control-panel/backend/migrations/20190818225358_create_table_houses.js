@@ -1,4 +1,3 @@
-
 exports.up = function (knex, Promise) {
 	return knex.schema.createTable('houses', houses => {
 		houses.increments('id').primary()
@@ -9,11 +8,12 @@ exports.up = function (knex, Promise) {
 		houses.string('type') //apartment, house, terrain...
 		houses.string('area') // urban or rural
 		houses.string('transaction') // rent or sell
-		houses.integer('neighborhood').notNull().unsigned()
-		houses.foreign('neighborhood').references('id').inTable('neigborhoods')
+		houses.integer('idNeighborhood').notNull().unsigned()
+		houses.foreign('idNeighborhood').references('id').inTable('neighborhoods')
 		houses.foreign('idClient').references('id').inTable('clients')
 	})
 };
+
 
 exports.down = function (knex, Promise) {
 	return knex.schema.dropTable('houses')

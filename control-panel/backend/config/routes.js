@@ -11,16 +11,19 @@ module.exports = app => {
 
 
     app.route('/houses')
-        .all(app.config.passport.authenticate())
-        .post(admin(app.api.houses.save))
+        //.all(app.config.passport.authenticate())
+        .post(app.api.houses.save)
         
 
     app.route("/clients")
-        .all(app.config.passport.authenticate())
-        .post(admin(app.api.clients.save))
+        //.all(app.config.passport.authenticate())
+        .post(app.api.clients.save)
         
 
     app.route('/news')
-        .all(app.config.passport.authenticate())
-        .post(admin(app.api.news.save))
+        //.all(app.config.passport.authenticate())
+        .post(/* admin( */app.api.news.save/* ) */)
+
+    app.route('/neighborhood')
+        .post(app.api.neighborhood.save)
 }

@@ -4,7 +4,7 @@ module.exports = {
 	connection: {
 		database: 'ssconsultoria',
 		user: 'root',
-		password: 'mv19ma94'
+		password: ''
 	},
 	pool: {
 		min: 2,

@@ -4,6 +4,7 @@ module.exports = app =>{
     const save = async (req, res) =>{
         const client = {...req.body}
 
+
         if(req.params.id) houseInfo.id = req.params.id
 
         try{
@@ -26,7 +27,9 @@ module.exports = app =>{
         else{
             app.db('clients')
                 .insert(client)
-                .then(_ => res.status(201).send())
+                .then(data => {
+                    res.status(200).send(data[0].toString())
+                })
                 .catch(err => res.status(500).send(err))
         }
     }
