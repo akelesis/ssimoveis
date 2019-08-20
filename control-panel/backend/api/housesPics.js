@@ -4,6 +4,8 @@ module.exports = app => {
     const save = async (req, res) => {
         const housePics = { ...req.body }
 
+        console.log(...housePics)
+
         try {
             existsOrError(housePics.idHouse, 'Imóvel não informado')
             existsOrError(housePics.pics, 'Não existem imagens para serem salvas')
@@ -12,12 +14,12 @@ module.exports = app => {
             res.status(500).send(err)
         }
 
-        for(let i = 0; i < housePics.pics.length; i++){
-            app.db('houses-pics')
-                .insert({idHouse:housePics.idHouse, url:housePics.pics[i]})
-                .then(_ => res.status(204).send())
-                .catch(err => res.status(500).send(err))
-        }
+        
+        app.db('houses-pics')
+            .insert({idHouse:housePics.idHouse, url:housePics.pics})
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(500).send(err))
+        
     }
 
     const remove = async (req, res) => {

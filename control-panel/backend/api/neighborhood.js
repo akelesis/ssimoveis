@@ -1,7 +1,7 @@
 module.exports = app =>{
     const {existsOrError} = app.api.validation
 
-    const save = async (req, res) =>{
+    const save = (req, res) =>{
         const neigborhood = {...req.body}
 
         if(req.params.id) neigborhood.id = req.params.id
@@ -24,7 +24,7 @@ module.exports = app =>{
             app.db('neighborhoods')
                 .insert(neigborhood)
                 .then(data => {
-                    res.status(201).send(data[0].toString())
+                    return res.status(201).send(data[0].toString())
                 })
                 .catch(err => res.status(500).sendStatus(err))
         }

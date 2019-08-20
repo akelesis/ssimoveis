@@ -27,14 +27,14 @@ module.exports = app =>{
             app.db('houses')
                 .update(houseInfo)
                 .where({id: houseInfo.id})
-                /* .then(_ => res.status(201).send())
-                .catch(err => res.status(500).send(err)) */
+                .then(res => res.status(201).send(res.data))
+                .catch(err => res.status(500).send(err))
         }
         else{
             app.db('houses')
                 .insert(houseInfo)
-                /* .then(_ => res.status(201).send())
-                .catch(err => res.status(500).send(err)) */
+                .then(_ => res.status(201).send())
+                .catch(_ => res.status(500).send())
         }
     }
 

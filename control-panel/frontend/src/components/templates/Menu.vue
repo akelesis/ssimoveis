@@ -6,11 +6,17 @@
       </div>
       <h3 class="pt-3">Painel de controle</h3>
     </div>
-    <router-link to="/welcome" class="menu-link">
-      <div class="menu-item">Inicio</div>
+    <router-link to="/regclient" class="menu-link">
+      <div class="menu-item">Clientes</div>
+    </router-link>
+    <router-link to="/regneigh" class="menu-link">
+      <div class="menu-item">Bairros</div>
     </router-link>
     <router-link to="/reghouses" class="menu-link">
       <div class="menu-item">Imóveis</div>
+    </router-link>
+    <router-link to="/regaction" class="menu-link">
+      <div class="menu-item">Empreendimentos</div>
     </router-link>
     <router-link to="/regnews" class="menu-link">
       <div class="menu-item">Notícias</div>

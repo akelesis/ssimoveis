@@ -18,6 +18,7 @@ module.exports = app => {
     app.route("/clients")
         //.all(app.config.passport.authenticate())
         .post(app.api.clients.save)
+        .get(app.api.clients.get)
         
 
     app.route('/news')
@@ -26,4 +27,8 @@ module.exports = app => {
 
     app.route('/neighborhood')
         .post(app.api.neighborhood.save)
+        .get(app.api.neighborhood.get)
+
+    app.route('/uploads')
+        .post(app.api.uploads.save)
 }

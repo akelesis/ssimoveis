@@ -2,7 +2,7 @@
   <div class="reghouses">
     <h1>Cadastro e edição de casas</h1>
 
-    <form method="post" enctype="multipart/form-data" class="house-form" action="/">
+    <form action="" class="house-form">
       <div class="input-group">
         <label for="title">Titulo da casa</label>
         <input type="text" class="input-group" name="title" id="title" v-model="houseInfo.title"/>
@@ -38,26 +38,28 @@
         <input type="number" min=0 class="input-group" name="value" id="value" v-model="houseInfo.price"/>
       </div>
       <div class="input-group">
-        <label for="owner" class="mt-1">selecione o proprietário</label>
-        <select name="owner" id="owner" v-model="client">
-          <option value="" selected>Selecione</option>
-          <option v-for="client in clients" :value="client.id" :key="client.id">{{client.name}}</option>
-        </select>
+        <label for="owner" class="mt-1">Nome do proprietário</label>
+        <input type="text" class="input-group" name="owner" id="owner" v-model="clientInfo.name"/>
       </div>
       <div class="input-group">
-        <label for="neighborhood" class="mt-1">selecione o bairro</label>
-        <select name="neighborhood" id="neighborhood" v-model="neighborhood">
-          <option value="" selected>Selecione</option>
-          <option v-for="neighborhood in neighborhoods" :value="neighborhood.id" :key="neighborhood.id">{{neighborhood.name}}</option>
-        </select>
+        <label for="email-owner" class="mt-1">Email do proprietário</label>
+        <input type="email" class="input-group" name="email-owner" id="email-owner" v-model="clientInfo.email" />
+      </div>
+      <div class="input-group">
+        <label for="cel-owner" class="mt-1">Telefone do proprietário</label>
+        <input type="text" class="input-group" name="cel-owner" id="cel-owner" v-model="clientInfo.telephone" />
+      </div>
+      <div class="input-group">
+        <label for="cel-owner" class="mt-1">Bairro</label>
+        <input type="text" class="input-group" name="neighborhood" id="neighborhood" v-model="neighborhood.name"/>
       </div>
       <div class="input-group description-area">
         <label for="house-description" class="mt-3">Descrição</label>
-        <textarea name="description" id="house-description" cols="30" rows="5" v-model="houseInfo.description"></textarea>
+        <textarea name="description" id="house-description" cols="30" rows="5"></textarea>
       </div>
       <div class="input-group">
         <label for="house-img-upload" class="mt-3">Selecione as imagens</label>
-        <input type="file" name="imgs" id="imgs" @change="getPics" multiple>
+        <input type="file" name="img" id="house-img-upload" multiple>
       </div>
       <button type="button" class="panel-btn" @click="saveHouse">Salvar</button>
     </form>
@@ -71,88 +73,18 @@
 </template>
 
 <script>
-import baseApiUrl from '@/global'
-import axios from 'axios'
+/* import baseApiUrl from '@/global'
+import axios from 'axios' */
 export default {
   data(){
     return{
       houseInfo: {},
-      clients: [],
-      client: '',
-      neighborhoods: [],
-      neighborhood: '',
-      pics: [],
-      houseId: ''
+      clientInfo: {},
+      neighborhood: {},
     }
   },
 
   methods: {
-    async saveHouse(){
-
-      this.houseInfo.price = parseFloat(this.houseInfo.price)
-
-      this.houseInfo.idClient = this.client
-      this.houseInfo.neighborhood = this.neighborhood
-
-      await axios.post(`${baseApiUrl}/houses`, this.houseInfo)
-        .then(res => {
-          this.houseId = res.data
-          alert(res.data)
-          alert('Casa cadastrada com sucesso!')
-        })
-        .catch(err => {
-          alert(err)
-        }) 
-
-      const picsInfo = {}
-      picsInfo.idHouse = this.houseId;
-      picsInfo.pics = this.pics
-
-      console.log(this.houseId)
-
-      axios.post(`${baseApiUrl}/housePics`, picsInfo)
-        .then(() => alert('Imagens salvas no banco de dados'))
-        .catch(err => alert(err))
-
-    },
-
-    loadNeigh() {
-      const url = `${baseApiUrl}/neighborhood`;
-      axios.get(url).then(res => {
-        this.neighborhoods = res.data;
-      });
-    },
-    loadClients() {
-      const url = `${baseApiUrl}/clients`;
-      axios.get(url).then(res => {
-        this.clients = res.data;
-      });
-    },
-
-    getPics(event) {
-      const fd = new FormData();
-
-      for(let i = 0; i < event.target.files.length; i++){
-        let img = event.target.files[i]
-        fd.append("imgs"+i, img)
-        
-      }
-      console.log(...fd)
-
-      axios
-        .post(`${baseApiUrl}/uploads`, fd)
-        .then(resp => {
-          for(let i = 0; i < resp.data.length; i++){
-            this.pics[i] = baseApiUrl + '/' + resp.data[i]
-          }
-        })
-        .catch(err => alert(err));
-    },
-
-  },
-  mounted(){
-    this.loadNeigh(),
-    this.loadClients()
   }
 }
 </script>
