@@ -1,38 +1,36 @@
 module.exports = app => {
     const { existsOrError } = app.api.validation
 
-    const save = async (req, res) => {
+    const save = (req, res) => {
         const housePics = { ...req.body }
+        const picsInfoVector = []
 
-        console.log(...housePics)
-
-        try {
-            existsOrError(housePics.idHouse, 'Imóvel não informado')
-            existsOrError(housePics.pics, 'Não existem imagens para serem salvas')
+        for(let i = 0; i < Object.entries(housePics).length; i ++){
+            picsInfoVector.push(housePics[i])
         }
-        catch (err) {
-            res.status(500).send(err)
-        }
-
         
         app.db('houses-pics')
-            .insert({idHouse:housePics.idHouse, url:housePics.pics})
-            .then(_ => res.status(204).send())
+            .insert(picsInfoVector)
+            .then(() => res.status(204).send())
             .catch(err => res.status(500).send(err))
         
     }
 
     const remove = async (req, res) => {
+        
+
         try {
+
             existsOrError(req.params.id, 'Código é inexistente!')
 
             const rowsDeleted = await app.db('houses-pics').del()
-                .where({ id: req.params.id })
-            existsOrError(rowsDeleted, 'Imagem não encontrada')
+                .where({ idHouse: req.params.id })
+            existsOrError(rowsDeleted, 'Imagens não encontradas')
 
             res.status(204).send
         }
         catch (msg) {
+            console.log(msg)
             res.status(400).send(msg)
         }
     }

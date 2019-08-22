@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
 		actions.increments('id').primary()
 		actions.string('title').notNull()
 		actions.string('description').notNull()
-		actions.string('main-pic').notNull()
+		actions.string('mainPic').notNull()
 	})
 };
 

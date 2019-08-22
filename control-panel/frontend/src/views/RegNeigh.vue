@@ -1,6 +1,6 @@
 <template>
   <div class="reghouses">
-    <h1>Cadastro e edição de casas</h1>
+    <h1>Cadastro e edição de bairros</h1>
 
     <form action="" class="house-form">
       <div>
@@ -8,12 +8,24 @@
         <input type="text" class="input-group" name="title" id="title" v-model="neighborhood.name"/>
       </div>
 
-      <button type="button" class="panel-btn" @click="saveHouse">Salvar</button>
+      <button type="button" class="panel-btn" @click="saveNeigh">Salvar</button>
     </form>
     
 
-    <div class="houses-box">
-
+    <div class="neighborhood-box">
+      <div id="list">
+          <h4 class="mt-3">Bairros:</h4>
+          <b-table hover striped :items="neighborhoods" :fields="fields">
+            <template slot="actions" slot-scope="data">
+              <b-button variant="warning" @click="loadNeigh(data.item)" class="mr-2">
+                <i class="fas fa-pencil-alt"></i>
+              </b-button>
+              <b-button variant="danger" @click="removeNeigh(data.item)" class="mr-2">
+                <i class="fas fa-trash"></i>
+              </b-button>
+            </template>
+          </b-table>
+        </div>
     </div>
 
   </div>
@@ -26,17 +38,44 @@ export default {
   data(){
     return{
       neighborhood: {},
+      fields:[
+        {key: "id", label: "código", sortable: true},
+        {key: "name", label: "Bairro", sortable: true},
+        {key: "actions", label: "Ações"},
+      ],
+      neighborhoods: []
     }
   },
 
   methods: {
-    saveHouse(){
+    saveNeigh(){
       axios.post(`${baseApiUrl}/neighborhood`, this.neighborhood)
         .then(() => alert('Bairro cadastrado com sucesso!'))
         .catch(err => {
           alert(err)
         })
+    },
+    loadNeighs() {
+      const url = `${baseApiUrl}/neighborhood`;
+      axios.get(url).then(res => {
+        this.neighborhoods = res.data;
+      });
+    },
+    loadNeigh(neigh){
+      this.neighborhood = { ...neigh }
+    },
+    removeNeigh(neigh){
+      axios.delete(`${baseApiUrl}/neigh/${neigh.id}`)
+        .then(() => console.log('Bairro removido'))
+        .catch(err => console.log(err))
+
+      this.neighborhoods = []
+      this.loadNeigh()
+
     }
+  },
+  mounted(){
+    this.loadNeighs()
   }
 }
 </script>
@@ -82,12 +121,14 @@ export default {
   width: 100%;
 }
 
-.houses-box{
+.neighborhood-box{
   height: 500px;
   width: 60vw;
   margin-top: 50px;
   background-color: #fff;
   border: 1px solid #444;
+  overflow: hidden;
+  overflow-y: visible;
 }
 
 .panel-btn{

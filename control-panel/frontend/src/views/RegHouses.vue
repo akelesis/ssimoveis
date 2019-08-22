@@ -64,7 +64,19 @@
     
 
     <div class="houses-box">
-
+      <div id="list">
+          <h4 class="mt-3">Imóveis:</h4>
+          <b-table hover striped :items="houses" :fields="fields">
+            <template slot="actions" slot-scope="data">
+              <b-button variant="warning" @click="loadHouse(data.item)" class="mr-2">
+                <i class="fas fa-pencil-alt"></i>
+              </b-button>
+              <b-button variant="danger" @click="removeHouse(data.item)" class="mr-2">
+                <i class="fas fa-trash"></i>
+              </b-button>
+            </template>
+          </b-table>
+        </div>
     </div>
 
   </div>
@@ -82,37 +94,49 @@ export default {
       neighborhoods: [],
       neighborhood: '',
       pics: [],
-      houseId: ''
+      houseId: '',
+      fields:[
+        {key: "id", label: "código", sortable: true},
+        {key: "title", label: "Imóvel", sortable: true},
+        {key: "transaction", label: "Transação", sortable: false},
+        {key: "actions", label: "Ações"},
+      ],
+      houses: []
     }
   },
 
   methods: {
-    async saveHouse(){
+    reset(){
+      this.houseInfo = {}
+    },
 
+    saveHouse(){
+      const picsInfo = new Array()
       this.houseInfo.price = parseFloat(this.houseInfo.price)
 
       this.houseInfo.idClient = this.client
       this.houseInfo.neighborhood = this.neighborhood
 
-      await axios.post(`${baseApiUrl}/houses`, this.houseInfo)
+      axios.post(`${baseApiUrl}/houses`, this.houseInfo)
         .then(res => {
-          this.houseId = res.data
-          alert(res.data)
-          alert('Casa cadastrada com sucesso!')
+          this.houseId = res.data[0]
         })
         .catch(err => {
-          alert(err)
-        }) 
+          console.log(err)
+        })
 
-      const picsInfo = {}
-      picsInfo.idHouse = this.houseId;
-      picsInfo.pics = this.pics
-
-      console.log(this.houseId)
+      for(let i = 0; i < this.pics.length; i++){
+        console.log(this.houseId)
+        picsInfo.push({idHouse: this.houseId, url: this.pics[i]});
+      }
 
       axios.post(`${baseApiUrl}/housePics`, picsInfo)
-        .then(() => alert('Imagens salvas no banco de dados'))
-        .catch(err => alert(err))
+        .then(() => console.log('Imagens salvas no banco de dados'))
+        .catch(err => console.log(err))
+
+      this.houses = []
+      this.loadHouses()
+      this.reset()
 
     },
 
@@ -137,7 +161,6 @@ export default {
         fd.append("imgs"+i, img)
         
       }
-      console.log(...fd)
 
       axios
         .post(`${baseApiUrl}/uploads`, fd)
@@ -148,11 +171,34 @@ export default {
         })
         .catch(err => alert(err));
     },
+    loadHouses(){
+      const url = `${baseApiUrl}/houses`;
+      axios.get(url).then(res => {
+        this.houses = res.data;
+      });
+    },
+    loadHouse(house){
+      this.houseInfo = { ...house }
+    },
+    removeHouse(house){
+      axios.delete(`${baseApiUrl}/housePics/${house.id}`)
+        .then(() => console.log('fotos apagadas'))
+        .catch(err => console.log(err))
+
+      axios.delete(`${baseApiUrl}/houses/${house.id}`)
+        .then(() => console.log('Casa removida'))
+        .catch(err => console.log(err))
+
+      this.houses = []
+      this.loadHouses()
+
+    }
 
   },
   mounted(){
     this.loadNeigh(),
-    this.loadClients()
+    this.loadClients(),
+    this.loadHouses()
   }
 }
 </script>
@@ -204,6 +250,8 @@ export default {
   margin-top: 50px;
   background-color: #fff;
   border: 1px solid #444;
+  overflow: hidden;
+  overflow-y: visible;
 }
 
 .panel-btn{

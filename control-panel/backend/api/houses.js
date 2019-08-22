@@ -18,22 +18,26 @@ module.exports = app =>{
             existsOrError(houseInfo.neighborhood, 'Bairro do imóvel não informado')
             existsOrError(houseInfo.transaction, 'Tipo de transação do imóvel não informada')
         }
-        catch(err){
-            res.status(400).send(err)
+        catch(msg){
+            res.status(400).send(msg)
         }
-        
+        console.log('chegou aqui!!')
         houseInfo.price = parseFloat(houseInfo.price)
         if(houseInfo.id){
             app.db('houses')
                 .update(houseInfo)
                 .where({id: houseInfo.id})
-                .then(res => res.status(201).send(res.data))
+                .then(info => {
+                    return res.status(200).send(res.data)
+                })
                 .catch(err => res.status(500).send(err))
         }
         else{
             app.db('houses')
                 .insert(houseInfo)
-                .then(_ => res.status(201).send())
+                .then(info => {
+                    return res.status(200).send(info)
+                })
                 .catch(_ => res.status(500).send())
         }
     }
@@ -49,6 +53,7 @@ module.exports = app =>{
             res.status(204).send
         }
         catch(msg){
+            console.log(msg)
             res.status(400).send(msg)
         }
     }

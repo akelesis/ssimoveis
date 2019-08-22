@@ -19,8 +19,20 @@
     </form>
     
 
-    <div class="houses-box">
-
+    <div class="clients-box">
+      <div id="list">
+          <h4 class="mt-3">Bairros:</h4>
+          <b-table hover striped :items="clients" :fields="fields">
+            <template slot="actions" slot-scope="data">
+              <b-button variant="warning" @click="loadClient(data.item)" class="mr-2">
+                <i class="fas fa-pencil-alt"></i>
+              </b-button>
+              <b-button variant="danger" @click="removeClient(data.item)" class="mr-2">
+                <i class="fas fa-trash"></i>
+              </b-button>
+            </template>
+          </b-table>
+        </div>
     </div>
 
   </div>
@@ -35,6 +47,13 @@ export default {
       houseInfo: {},
       clientInfo: {},
       neighborhood: {},
+      clients: [],
+      fields:[
+        {key: "id", label: "código", sortable: true},
+        {key: "name", label: "Nome", sortable: true},
+        {key: "email", label: "Email", sortable: false},
+        {key: "actions", label: "Ações"},
+      ],
     }
   },
 
@@ -45,7 +64,31 @@ export default {
         .catch(err => {
           alert(err)
         })
+
+      this.clients = []
+      this.loadClients()
+    },
+    loadClients() {
+      const url = `${baseApiUrl}/clients`;
+      axios.get(url).then(res => {
+        this.clients = res.data;
+      });
+    },
+    loadClient(client){
+      this.clientInfo = { ...client }
+    },
+    removeClient(client){
+      axios.delete(`${baseApiUrl}/clients/${client.id}`)
+        .then(() => console.log('Bairro removido'))
+        .catch(err => console.log(err))
+
+      this.clients = []
+      this.loadClients()
+
     }
+  },
+   mounted(){
+    this.loadClients()
   }
 }
 </script>
@@ -97,6 +140,16 @@ export default {
   margin-top: 50px;
   background-color: #fff;
   border: 1px solid #444;
+}
+
+.clients-box{
+  height: 500px;
+  width: 60vw;
+  margin-top: 50px;
+  background-color: #fff;
+  border: 1px solid #444;
+  overflow: hidden;
+  overflow-y: visible;
 }
 
 .panel-btn{

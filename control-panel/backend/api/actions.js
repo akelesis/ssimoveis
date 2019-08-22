@@ -12,7 +12,7 @@ module.exports = app =>{
             
             existsOrError(actionInfo.title, 'Titulo não informado!')
             existsOrError(actionInfo.description, 'Descrição do imóvel não informada')
-            existsOrError(actionInfo['main-pic'], 'Imagem prinicipal do imóvel não informada!')
+            existsOrError(actionInfo.mainPic, 'Imagem prinicipal do imóvel não informada!')
         }
         catch(err){
             res.status(400).send(err)
@@ -22,13 +22,13 @@ module.exports = app =>{
             app.db('actions')
                 .update(actionInfo)
                 .where({id: actionInfo.id})
-                .then(_ => res.status(201).send())
+                .then(data => res.status(201).send(data))
                 .catch(err => res.status(500).send(err))
         }
         else{
             app.db('actions')
                 .insert(actionInfo)
-                .then(_ => res.status(201).send())
+                .then(data => res.status(201).send(data))
                 .catch(err => res.status(500).send(err))
         }
     }
