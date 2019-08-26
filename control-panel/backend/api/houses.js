@@ -21,16 +21,19 @@ module.exports = app =>{
         catch(msg){
             res.status(400).send(msg)
         }
-        console.log('chegou aqui!!')
         houseInfo.price = parseFloat(houseInfo.price)
         if(houseInfo.id){
             app.db('houses')
-                .update(houseInfo)
-                .where({id: houseInfo.id})
-                .then(info => {
-                    return res.status(200).send(res.data)
+            .update(houseInfo)
+            .where({id: houseInfo.id})
+            .then(info => {
+                console.log('chegou aqui!!')
+                return res.status(200).send(info.data)
+            })
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).send(err)
                 })
-                .catch(err => res.status(500).send(err))
         }
         else{
             app.db('houses')
@@ -38,7 +41,10 @@ module.exports = app =>{
                 .then(info => {
                     return res.status(200).send(info)
                 })
-                .catch(_ => res.status(500).send())
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).send()
+                })
         }
     }
 

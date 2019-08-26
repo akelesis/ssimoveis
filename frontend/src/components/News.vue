@@ -1,12 +1,12 @@
 <template>
     <div class="news-preview">
         <h3 class="news-title">ÚLTIMAS NOTÍCIAS:</h3>
-        <div class="news-container">
+        <div class="news-container" v-if="display">
             <div class="news-card" v-for="n in news" :key="n.id">
-                <img :src="n.pic" alt="Foto da noticia">
-                <span class="news-sub">
+                <img :src="n.img" alt="Foto da noticia" @click="goToNews(n.link)">
+                <span class="news-sub" @click="goToNews(n)">
                     {{n.date}}<br/>
-                    {{n.news}}
+                    {{n.description}}
                 </span>
             </div>
         </div>
@@ -14,16 +14,56 @@
 </template>
 
 <script>
+import axios from 'axios'
+import baseApiUrl from '@/global.js'
 export default {
     data(){
         return {
-            news: [
-                {id: 1, pic: "./imgs/indice.jpg", news: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore", date: "11/05/2019"},
-                {id: 2, pic: "./imgs/apt02.jpg", news: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore", date: "15/06/2019"},
-                {id: 3, pic: "./imgs/apt03.jpg", news: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore", date: "05/07/2019"}
-            ]
+            news: [],
+            display: false
         }
+        
+    },
+    methods: {
+    
+    loadNews(){
+      axios.get(`${baseApiUrl}/news`)
+        .then(res => {
+          this.news = [res.data[res.data.length-1], res.data[res.data.length-2], res.data[res.data.length-3]]
+          for(let i = 0; i < this.news.length; i++){
+              this.news[i].date = this.news[i].date.split('T')
+              this.news[i].date = this.news[i].date[0]
+          }
+        })
+        .catch(err => console.log(err))
+
+        this.loadPics()
+    },
+    loadPics(){
+      setTimeout(() => {
+        console.log(this.news.length)
+        for(let i = 0; i < this.news.length; i++){
+          axios.get(`${baseApiUrl}/newsPics/${this.news[i].id}`)
+            .then(res => this.news[i].img = res.data.url)
+            .catch(err => console.log(err))
+      }
+      },500)
+
+      setTimeout(() => {
+        console.log(this.news)
+        this.display = true
+      }, 1100);
+
+    },
+    goToNews(url){
+        console.log({...url})
+        alert({...url})
+        window.location.href = url
     }
+  },
+  mounted() {
+      this.loadNews()
+  }
 }
 </script>
 

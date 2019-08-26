@@ -6,16 +6,16 @@
         <div class="main-details-box">
             <div class="pic-container">
                 <div class="main-pic">
-                    <img :src="mainPic.img" :alt="mainPic.alt">
+                    <img :src="mainPic" :alt="mainPic.alt">
                 </div>
-                <div class="pic-miniatures">
+                <div class="pic-miniatures" v-if="ready">
                     <div class="pic-miniature" v-for="pic in otherPics" :key="pic.id">
-                        <img :src="pic.img" :alt="pic.alt" @click="changePic(pic)">
+                        <img :src="pic" @click="changePic(pic)">
                     </div>
                 </div>
             </div>
             <div class="text-container">
-                <div class="text-value">VALOR: {{house.value}},00</div>
+                <div class="text-value">VALOR: {{house.price}},00</div>
                 <div class="text-type">TIPO:{{house.type}}</div>
                 <div class="text-description"><strong>DESCRIÇÃO:</strong><br/>{{house.description}}</div>
             </div>
@@ -31,24 +31,14 @@
 </template>
 
 <script>
+import axios from 'axios'
+import baseApiUrl from '@/global.js'
 export default {
     data(){
         return{
-            mainPic: {id: 1, img: "./imgs/apt01.jpg", alt: "Descrição generica 1"},
-            x: '',
-            otherPics: [
-                {id: 1, img: "./imgs/apt01.jpg", alt: "Descrição generica 1"}, 
-                {id: 2, img: "./imgs/apt02.jpg", alt: "Descrição generica 2"}, 
-                {id: 3, img: "./imgs/apt03.jpg", alt: "Descrição generica 3"}, 
-                {id: 4, img: "./imgs/apt04.jpg", alt: "Descrição generica 4"}
-            ],
-            house: {
-                id: 1,
-                title: "APARTAMENTO BONITO E ESPAÇOSO",
-                value: 1200,
-                type: "Aluguel",
-                description: " Malesuada bibendum arcu vitae elementum. Mauris cursus mattis molestie a iaculis at erat pellentesque Nisl rhoncus mattis rhoncus urna neque. Viverra mauris in aliquam sem fringilla. Nullam eget felis eget nunc lobortis. Adipiscing diam donec adipiscing tristique. Gravida rutrum quisque non tellus orci ac auctor augue."
-            }
+            mainPic: '',
+            otherPics: [],
+            ready: false
         }
     },
     methods: {
@@ -60,8 +50,32 @@ export default {
             this.link = this.link.join('%20')
             this.link = `https://api.whatsapp.com/send?phone=5573991371695&text=Ola%21%20Queria%20falar%20sobre%20o%20imovel%20${(this.link)}`
             window.location.href = this.link
-            
+        },
+        setHouse(){
+            console.log(this.house.img)
+            this.mainPic = this.house.img 
+        },
+        getOtherPics(){
+            axios.get(`${baseApiUrl}/housePics/${this.house.id}`)
+                .then(res => {
+                    for(let i = 0; i < res.data.length; i++){
+                        this.otherPics.push(res.data[i].url)
+                    }
+                })
+                setTimeout(() => {
+                    this.ready = true
+                    console.log('chegou aqui')
+                }, 1500)
         }
+    },
+    computed:{
+        house(){
+            return this.$store.state.house
+        }
+    },
+    mounted(){
+        this.setHouse()
+        this.getOtherPics()
     }
 }
 </script>

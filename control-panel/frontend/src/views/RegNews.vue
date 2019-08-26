@@ -35,18 +35,68 @@
 </template>
 
 <script>
+import baseApiUrl from '@/global'
+import axios from 'axios'
 export default {
   data(){
     return{
-      news: {}
+      news: {},
+      archive: [],
+      fields:[
+        {key: "id", label: "código", sortable: true},
+        {key: "title", label: "Noticia", sortable: true},
+        {key: "actions", label: "Ações"},
+      ],
+      pic: '',
+      newsId: ''
     }
   },
   methods: {
+    reset(){
+      this.news = {}
+    },
     SaveImg(){
-      console.log('img saved')
+      const fd = new FormData();
+      let img = event.target.files[0]
+      fd.append("news", img)
+    
+      axios
+        .post(`${baseApiUrl}/uploads`, fd)
+        .then(resp => {
+          this.pic = baseApiUrl + '/' + resp.data
+        })
+        .catch(err => alert(err));
     },
     SaveNews(){
-      console.log('news saved')
+      this.news.date = '2019-08-22'
+      axios.post(`${baseApiUrl}/news`, this.news)
+        .then(res => {
+          this.newsId = res.data[0]
+
+          const picsInfo = new Array()
+          picsInfo.push({idNews: this.newsId, url: this.pic});
+
+          axios.post(`${baseApiUrl}/newsPics`, picsInfo)
+            .then(() => alert('Noticia salva no banco de dados'))
+            .catch(err => console.log("não foi possível salvar, erro: " + err))
+        })
+        .catch(err => {
+          console.log(err)
+        })
+        
+
+      this.actions = []
+      this.loadNews()
+      this.reset()
+    },
+    loadNews(){
+      const url = `${baseApiUrl}/news`;
+      axios.get(url).then(res => {
+        this.archive = res.data;
+      });
+    },
+    loadTheNews(){
+      this.news = {...action}
     }
   }
 

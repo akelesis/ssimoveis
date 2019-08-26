@@ -3,7 +3,7 @@ const app = express()
 const consign = require('consign')
 const db = require('./config/db')
 
-app.use('uploads', express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 
 app.db = db
 

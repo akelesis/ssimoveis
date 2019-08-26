@@ -14,19 +14,18 @@ module.exports = app =>{
         catch(err){
             res.status(500).send(err)
         }
-        console.log(newsInfo)
-
+        
         if(newsInfo.id){
             app.db('news')
-                .update(newsInfo)
-                .where({id: newsInfo.id})
-                .then(_ => res.status(204).send())
-                .catch(err => res.status(500).send(err))
+            .update(newsInfo)
+            .where({id: newsInfo.id})
+            .then(data => res.status(204).send(data))
+            .catch(err => res.status(500).send(err))
         }
         else{
             app.db('news')
                 .insert(newsInfo)
-                .then(_ => res.status(201).send())
+                .then(data => res.status(201).send(data))
                 .catch(err => res.status(500).send(err))
         }
     }

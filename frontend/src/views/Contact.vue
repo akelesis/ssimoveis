@@ -3,25 +3,40 @@
         <h3 class="contact-title">Fale Conosco!</h3>
         <form action="" class="contact-form">
             <div class="contact-fields">
-                <input class="input-field" type="text" placeholder="Seu nome"/>
-                <input class="input-field" type="text" placeholder="Seu melhor email"/>
+                <input class="input-field" type="text" placeholder="Seu nome" v-model="contact.name"/>
+                <input class="input-field" type="text" placeholder="Seu melhor email" v-model="contact.email"/>
             </div>
             <div class="contact-fields">
-                <input class="input-field" type="text" placeholder="Seu número para contato"/>
-                <input class="input-field" type="text" placeholder="Assunto que deseja tratar"/>
+                <input class="input-field" type="text" placeholder="Seu número para contato" v-model="contact.tel"/>
+                <input class="input-field" type="text" placeholder="Assunto que deseja tratar" v-model="contact.subject"/>
             </div>
             <div class="contact-fields">
-                <textarea name="contact-message" id="contact-message" cols="30" rows="10"></textarea>
+                <textarea name="contact-message" id="contact-message" cols="30" rows="10" v-model="contact.message"></textarea>
             </div>
-            <button class="wpp-btn">ENVIAR!</button>
+            <button type="button" class="wpp-btn" @click="sendMail">ENVIAR!</button>
         </form>
         
     </div>
 </template>
 
 <script>
+import axios from "axios"
+import baseApiUrl from "@/global.js"
 export default {
-
+    data(){
+        return{
+            contact: {}
+        }
+    },
+    methods: {
+        sendMail(){
+            axios.post(`${baseApiUrl}/mail`, contact)
+                .then(() => {
+                    alert("Mensagem enviada com sucesso!")
+                    this.contact = {}
+                })
+        }
+    }
 }
 </script>
 

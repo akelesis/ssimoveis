@@ -1,20 +1,25 @@
 module.exports = app => {
     const { existsOrError } = app.api.validation
 
-    const save = async (req, res) => {
+    const save = (req, res) => {
         const newsPic = { ...req.body }
 
-        try {
+        
+
+        /* try {
             existsOrError(newsPic.idNews, 'Imóvel não informado')
-            existsOrError(newsPic.pic, 'Não existe imagem para ser salva')
+            existsOrError(newsPic.url, 'Não existe imagem para ser salva')
         }
         catch (err) {
+            
             res.status(500).send(err)
-        }
+        } */
 
         app.db('news-pics')
-            .insert(newsPic)
-            .then(_ => res.status(204).send())
+            .insert(newsPic[0])
+            .then(() => {
+                res.status(204).send()
+            })
             .catch(err => res.status(500).send(err))
 
     }
@@ -42,7 +47,7 @@ module.exports = app => {
 
     const getById = (req, res) => {
         app.db('news-pics')
-            .where({ id: req.params.id })
+            .where({ idNews: req.params.id })
             .first()
             .then(house => res.json(house))
     }

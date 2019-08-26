@@ -1,9 +1,9 @@
 <template>
   <div class="new-houses">
     <h3 class="new-houses-title">ÚLTIMOS IMÓVEIS ADICIONADOS:</h3>
-    <div class="new-house-cards-content">
-      <div class="new-house-cards" v-for="house in houses" :key="house.id" @click="HousePage()">
-        <img :src="house.pic" alt />
+    <div class="new-house-cards-content" v-if="ready">
+      <div class="new-house-cards" v-for="house in houses" :key="house.id" @click="HousePage(house)">
+        <img :src="house.img" alt="Imagem do imóvel">
         <span class="card-price">R$ {{house.price}}</span>
         <span class="card-type">{{house.type}}</span>
         <span class="card-description">{{house.description}}</span>
@@ -13,46 +13,52 @@
 </template>
 
 <script>
+import axios from 'axios'
+import baseApiUrl from '@/global.js'
 export default {
   data() {
     return {
-      houses: [
-        {
-          id: 1,
-          price: 1750.0,
-          type: "Aluguel",
-          description:
-            "Em cima de Rubens bar, não faz barulho, 3 escadas, dois quartos, sala, área de serviço, cozinha, banheiro, não tem garagem, mas possui garagens particulares nas proximidades, próximo a mercados, lanches, centro de Vitória da Conquista.",
-          pic: "./imgs/apt01.jpg"
-        },
-        {
-          id: 2,
-          price: 125000.0,
-          type: "Venda",
-          description:
-            "Em cima de Rubens bar, não faz barulho, 3 escadas, dois quartos, sala, área de serviço, cozinha, banheiro, não tem garagem, mas possui garagens particulares nas proximidades, próximo a mercados, lanches, centro de Vitória da Conquista.",
-          pic: "./imgs/apt02.jpg"
-        },
-        {
-          id: 4,
-          price: 75000.0,
-          type: "Venda",
-          description:
-            "Em cima de Rubens bar, não faz barulho, 3 escadas, dois quartos, sala, área de serviço, cozinha, banheiro, não tem garagem, mas possui garagens particulares nas proximidades, próximo a mercados, lanches, centro de Vitória da Conquista.",
-          pic: "./imgs/apt03.jpg"
-        }
-      ]
+      ready: false
     };
   },
   methods: {
-    getImg(path) {
-      return require(path);
-    },
-    HousePage(){
+    HousePage(house){
+        this.$store.commit('getHouse', house)
         this.$router.push("casa")
+    },
+    loadHouses(){
+      axios.get(`${baseApiUrl}/houses`)
+        .then(res => {
+          this.$store.state.houses = [res.data[res.data.length-1], res.data[res.data.length-2], res.data[res.data.length-3]]
+        })
+        .catch(err => console.log(err))
+
+        this.loadPics()
+    },
+    loadPics(){
+      setTimeout(() => {
+        for(let i = 0; i < this.houses.length; i++){
+          axios.get(`${baseApiUrl}/housePics/${this.houses[i].id}`)
+            .then(res => this.houses[i].img = res.data[0].url)
+            .catch(err => console.log(err))
+      }
+      },500)
+
+      setTimeout(() => {
+        this.ready = true
+      }, 1100);
+
+    }
+  },
+  mounted(){
+    this.loadHouses()
+  },
+  computed: {
+    houses() {
+      return this.$store.state.houses
     }
   }
-};
+}
 </script>
 
 <style>

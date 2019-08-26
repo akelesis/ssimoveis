@@ -70,8 +70,6 @@ export default {
     saveAction(){
       const picsInfo = new Array()
 
-      console.log(this.action.mainPic)
-
       axios.post(`${baseApiUrl}/actions`, this.action)
         .then(res => {
           this.actionId = res.data[0]
@@ -87,16 +85,10 @@ export default {
           console.log(err)
         })
 
-        
-
-      
-
       this.actions = []
       this.loadActions()
       this.reset()
 
-      
-      
     },
     getImgs(event) {
       const fd = new FormData();
@@ -136,6 +128,19 @@ export default {
         this.actions = res.data;
       });
     },
+    loadAction(action){
+      this.action = { ...action }
+    },
+
+    removeAction(action){
+      axios.delete(`${baseApiUrl}/actions/${action.id}`)
+        .then(() => console.log('Empreendimento removido'))
+        .catch(err => console.log(err))
+
+      this.clients = []
+      this.loadClients()
+
+    }
   },
   mounted(){
     this.loadActions()

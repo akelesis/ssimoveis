@@ -120,6 +120,7 @@ export default {
       axios.post(`${baseApiUrl}/houses`, this.houseInfo)
         .then(res => {
           this.houseId = res.data[0]
+          console.log(this.houseId)
         })
         .catch(err => {
           console.log(err)

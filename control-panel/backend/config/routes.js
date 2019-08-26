@@ -25,10 +25,22 @@ module.exports = app => {
     app.route("/clients/:id")
         .delete(app.api.clients.remove)
         
+    app.route("/mail")
+        .post(app.api.mailer.send)
 
     app.route('/news')
         //.all(app.config.passport.authenticate())
         .post(/* admin( */app.api.news.save/* ) */)
+        .get(app.api.news.get)
+    
+    app.route('/newsPics')
+        //.all(app.config.passport.authenticate())
+        .post(/* admin( */app.api.newsPics.save/* ) */)
+        .get(app.api.newsPics.get)
+
+    app.route('/newsPics/:id')
+        .get(app.api.newsPics.getById)
+        .delete(app.api.newsPics.remove)
 
     app.route('/neighborhood')
         .post(app.api.neighborhood.save)
@@ -42,6 +54,7 @@ module.exports = app => {
         .get(app.api.housesPics.get)
     
     app.route('/housePics/:id')
+        .get(app.api.housesPics.getById)
         .delete(app.api.housesPics.remove)
 
     app.route('/actions')

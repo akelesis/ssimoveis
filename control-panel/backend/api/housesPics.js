@@ -11,8 +11,14 @@ module.exports = app => {
         
         app.db('houses-pics')
             .insert(picsInfoVector)
-            .then(() => res.status(204).send())
-            .catch(err => res.status(500).send(err))
+            .then(() => {
+                
+                res.status(204).send()
+            })
+            .catch(err => {
+                console.log(err)
+                res.status(500).send(err)
+            })
         
     }
 
@@ -43,9 +49,11 @@ module.exports = app => {
 
     const getById = (req, res) => {
         app.db('houses-pics')
-            .where({ id: req.params.id })
-            .first()
-            .then(house => res.json(house))
+            .where({ idHouse: req.params.id })
+            /* .first() */
+            .then(house => {
+                res.json(house)
+            })
     }
 
     return { save, remove, getById, get }
