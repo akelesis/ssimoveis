@@ -4,6 +4,8 @@ module.exports = app =>{
     const save = (req, res) =>{
         const houseInfo = {...req.body}
 
+        console.log({...houseInfo})
+
         
         
         if(req.params.id) houseInfo.id = req.params.id

@@ -30,7 +30,7 @@ export default {
     },
     methods: {
         sendMail(){
-            axios.post(`${baseApiUrl}/mail`, contact)
+            axios.post(`${baseApiUrl}/mail`, this.contact)
                 .then(() => {
                     alert("Mensagem enviada com sucesso!")
                     this.contact = {}

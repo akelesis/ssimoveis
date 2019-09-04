@@ -2,19 +2,19 @@
   <div class="search-bar">
     <h1 class="search-header">ENCONTRE AQUI SEU NOVO LAR!</h1>
     <div class="search-group">
-      <select name="imovel" id="imovel" class="search-select">
+      <select name="imovel" id="imovel" class="search-select" v-model="research.imovel">
         <option value>TIPO DE IMOVEL</option>
-        <option value="casa">Casa</option>
-        <option value="apt">Apartamento</option>
-        <option value="terreno urbano">Terreno Urbano</option>
-        <option value="terreno rural">Terreno Rural</option>
+        <option value="Casa">Casa</option>
+        <option value="Apartamento">Apartamento</option>
+        <option value="Urbano">Terreno Urbano</option>
+        <option value="Zona Rural">Terreno Rural</option>
       </select>
 
       <label for="faixa-menor" class="search-label">FAIXA DE PREÇO:</label>
-      <input type="text" name="faixa-menor" id="faixa-menor" placeholder="DE:" class="search-form" />
-      <input type="text" name="faixa-maior" id="faixa-maior" placeholder="ATÉ:" class="search-form" />
+      <input type="text" name="faixa-menor" id="faixa-menor" placeholder="DE:" class="search-form" v-model="research.min" />
+      <input type="text" name="faixa-maior" id="faixa-maior" placeholder="ATÉ:" class="search-form" v-model="research.max" />
 
-      <select name="bairro" id="bairro" class="search-select">
+      <select name="bairro" id="bairro" class="search-select" v-model="research.neighborhood">
         <option value>BAIRRO</option>
         <option
           v-for="neighborhood in neighborhoods"
@@ -23,7 +23,7 @@
         >{{neighborhood.value}}</option>
       </select>
 
-      <select name="modalidade" id="modalidade" class="search-select">
+      <select name="modalidade" id="modalidade" class="search-select" v-model="research.transaction">
         <option
           v-for="transaction in transactionOpts"
           :value="transaction"
@@ -31,7 +31,7 @@
         >{{transaction.value}}</option>
       </select>
 
-      <button class="btn-search">Pesquisar</button>
+      <button class="btn-search" @click="Research()">Pesquisar</button>
     </div>
   </div>
 </template>
@@ -49,6 +49,16 @@ export default {
         { id: 3, value: "Brasil" }
       ]
     };
+  },
+  methods: {
+    Research(){
+      console.log(this.research)
+    }
+  },
+  computed: {
+    research(){
+      return this.$store.state.research
+    }
   }
 };
 </script>

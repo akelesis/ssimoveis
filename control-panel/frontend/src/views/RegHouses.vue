@@ -51,6 +51,10 @@
           <option v-for="neighborhood in neighborhoods" :value="neighborhood.id" :key="neighborhood.id">{{neighborhood.name}}</option>
         </select>
       </div>
+      <div class="input-group">
+        <label for="hightlight" class="mt-3 mr-2">Inserir nos destaques</label>
+        <input type="checkbox" name="highlight" id="highlight">
+      </div>
       <div class="input-group description-area">
         <label for="house-description" class="mt-3">Descrição</label>
         <textarea name="description" id="house-description" cols="30" rows="5" v-model="houseInfo.description"></textarea>
@@ -116,24 +120,26 @@ export default {
 
       this.houseInfo.idClient = this.client
       this.houseInfo.neighborhood = this.neighborhood
+      this.houseInfo.highlights = document.getElementById("highlight").checked
 
       axios.post(`${baseApiUrl}/houses`, this.houseInfo)
         .then(res => {
           this.houseId = res.data[0]
           console.log(this.houseId)
-        })
+          for(let i = 0; i < this.pics.length; i++){
+            console.log(this.houseId)
+            picsInfo.push({idHouse: this.houseId, url: this.pics[i]});
+          }
+
+          axios.post(`${baseApiUrl}/housePics`, picsInfo)
+            .then(() => console.log('Imagens salvas no banco de dados'))
+            .catch(err => console.log(err))
+            })
         .catch(err => {
           console.log(err)
         })
 
-      for(let i = 0; i < this.pics.length; i++){
-        console.log(this.houseId)
-        picsInfo.push({idHouse: this.houseId, url: this.pics[i]});
-      }
-
-      axios.post(`${baseApiUrl}/housePics`, picsInfo)
-        .then(() => console.log('Imagens salvas no banco de dados'))
-        .catch(err => console.log(err))
+      
 
       this.houses = []
       this.loadHouses()

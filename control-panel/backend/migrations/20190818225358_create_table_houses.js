@@ -9,6 +9,7 @@ exports.up = function (knex, Promise) {
 		houses.string('area') // urban or rural
 		houses.string('transaction') // rent or sell
 		houses.integer('neighborhood').notNull().unsigned()
+		houses.boolean('highlights').notNull().defaultTo(false)
 		houses.foreign('neighborhood').references('id').inTable('neighborhoods')
 		houses.foreign('idClient').references('id').inTable('clients')
 	})

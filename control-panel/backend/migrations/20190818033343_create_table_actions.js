@@ -5,6 +5,7 @@ exports.up = function(knex, Promise) {
 		actions.string('title').notNull()
 		actions.string('description').notNull()
 		actions.string('mainPic').notNull()
+		actions.string('video')
 	})
 };
 

@@ -2,7 +2,7 @@
   <div class="new-houses">
     <h3 class="new-houses-title">ÚLTIMOS IMÓVEIS ADICIONADOS:</h3>
     <div class="new-house-cards-content" v-if="ready">
-      <div class="new-house-cards" v-for="house in houses" :key="house.id" @click="HousePage(house)">
+      <div class="new-house-cards" v-for="house in highlights" :key="house.id" @click="HousePage(house)">
         <img :src="house.img" alt="Imagem do imóvel">
         <span class="card-price">R$ {{house.price}}</span>
         <span class="card-type">{{house.type}}</span>
@@ -18,7 +18,7 @@ import baseApiUrl from '@/global.js'
 export default {
   data() {
     return {
-      ready: false
+      ready: false,
     };
   },
   methods: {
@@ -29,7 +29,7 @@ export default {
     loadHouses(){
       axios.get(`${baseApiUrl}/houses`)
         .then(res => {
-          this.$store.state.houses = [res.data[res.data.length-1], res.data[res.data.length-2], res.data[res.data.length-3]]
+          this.$store.state.houses = res.data
         })
         .catch(err => console.log(err))
 
@@ -42,11 +42,11 @@ export default {
             .then(res => this.houses[i].img = res.data[0].url)
             .catch(err => console.log(err))
       }
-      },500)
+      },700)
 
       setTimeout(() => {
         this.ready = true
-      }, 1100);
+      }, 1500);
 
     }
   },
@@ -56,6 +56,12 @@ export default {
   computed: {
     houses() {
       return this.$store.state.houses
+    },
+    highlights(){
+      const highlights = this.$store.state.houses.filter(function(house){
+        return house.highlights == true
+      })
+      return highlights
     }
   }
 }

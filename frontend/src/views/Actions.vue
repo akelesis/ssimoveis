@@ -1,68 +1,43 @@
 <template>
     <div class="actions-page">
-        <div class="action" id="action-01">
-            <img class="img-action" src="../assets/imgs/banner5.jpg" alt="">
+        <div class="action" :id="'action-0'+action.id" v-for="action in actions" :key="action.id">
+            <img class="img-action" :src="action.mainPic" alt="" v-if="action.id%2 == 0">
             <div class="action-text">
-                <h3>Campus Vivant</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque suscipit cursus. Fusce sed enim nunc. 
-                    Maecenas bibendum interdum imperdiet. Suspendisse potenti. Vivamus ultrices elit sed sagittis tincidunt. Suspendisse 
-                    non egestas elit, et hendrerit est. Duis eu purus lectus. Quisque volutpat est arcu, vel tincidunt ligula ornare feugiat. 
-                    Etiam enim nisi, ornare ultricies mauris a, commodo convallis purus. Donec mauris elit, aliquam ac tempor eu, varius sit amet dui. 
-                    Nullam condimentum ante tristique, bibendum purus sit amet, sodales nisi. Donec volutpat dolor a hendrerit ullamcorper. 
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque suscipit cursus. Fusce sed enim nunc. 
-                    Maecenas bibendum interdum imperdiet. Suspendisse potenti. Vivamus ultrices elit sed sagittis tincidunt. Suspendisse 
-                    non egestas elit.
-                </p>
-                <button class="wpp-btn">SAIBA MAIS</button>
+                <h3>{{action.title}}</h3>
+                <p>{{action.description}}</p>
+                <button class="wpp-btn" @click="actionPage(action)">SAIBA MAIS</button>
             </div>
-        </div>
-        <div class="action" id="action-02">
-            <div class="action-text">
-                <h3>Dona Olívia</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque suscipit cursus. Fusce sed enim nunc. 
-                    Maecenas bibendum interdum imperdiet. Suspendisse potenti. Vivamus ultrices elit sed sagittis tincidunt. Suspendisse 
-                    non egestas elit, et hendrerit est. Duis eu purus lectus. Quisque volutpat est arcu, vel tincidunt ligula ornare feugiat. 
-                    Etiam enim nisi, ornare ultricies mauris a, commodo convallis purus. Donec mauris elit, aliquam ac tempor eu, varius sit amet dui. 
-                    Nullam condimentum ante tristique, bibendum purus sit amet, sodales nisi. Donec volutpat dolor a hendrerit ullamcorper. 
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque suscipit cursus. Fusce sed enim nunc. 
-                    Maecenas bibendum interdum imperdiet. Suspendisse potenti. Vivamus ultrices elit sed sagittis tincidunt. Suspendisse 
-                    non egestas elit.
-                </p>
-                <button class="wpp-btn">SAIBA MAIS</button>
-            </div>
-            <img class="img-action" src="../assets/imgs/donaOlivia.png" alt="">
-        </div>
-        <div class="action" id="action-03">
-            <img class="img-action" src="../assets/imgs/lord.png" alt="">
-            <div class="action-text">
-                <h3>Lord Residence</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque suscipit cursus. Fusce sed enim nunc. 
-                    Maecenas bibendum interdum imperdiet. Suspendisse potenti. Vivamus ultrices elit sed sagittis tincidunt. Suspendisse 
-                    non egestas elit, et hendrerit est. Duis eu purus lectus. Quisque volutpat est arcu, vel tincidunt ligula ornare feugiat. 
-                    Etiam enim nisi, ornare ultricies mauris a, commodo convallis purus. Donec mauris elit, aliquam ac tempor eu, varius sit amet dui. 
-                    Nullam condimentum ante tristique, bibendum purus sit amet, sodales nisi. Donec volutpat dolor a hendrerit ullamcorper. 
-                </p>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque suscipit cursus. Fusce sed enim nunc. 
-                    Maecenas bibendum interdum imperdiet. Suspendisse potenti. Vivamus ultrices elit sed sagittis tincidunt. Suspendisse 
-                    non egestas elit.
-                </p>
-                <button class="wpp-btn">SAIBA MAIS</button>
-            </div>
+            <img class="img-action" :src="action.mainPic" alt="" v-if="action.id%2 == 1">
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import baseApiUrl from '@/global.js'
 export default {
+    data(){
+        return{
+            actions: []
+        }
+    },
+    methods: {
+        getActions(){
+            axios.get(`${baseApiUrl}/actions`)
+                .then(res => {
+                    this.actions = res.data
 
+                })
+        },
+        actionPage(action){
+            this.$store.commit('getAction', action)
+            console.log(action)
+            this.$router.push({path: "/action"})
+        },
+    },
+    mounted(){
+        this.getActions();
+    }
 }
 </script>
 
@@ -76,6 +51,7 @@ export default {
         width: 100vw;
         display: flex;
         flex-wrap: wrap;
+        justify-content: space-between;
     }
 
     #action-01{
@@ -92,7 +68,7 @@ export default {
     }
 
     .img-action{
-        width: 60vw;
+        width: 50vw;
         height: 700px;
         justify-self: flex-start;
     }
@@ -101,7 +77,7 @@ export default {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        width: 30vw;
+        width: 40vw;
         margin-left: 50px;
         margin-top: 50px;
         justify-self: flex-end;

@@ -6,11 +6,16 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     houses: [],
-    house: {}
+    house: {},
+    action: {},
+    research: {}
   },
   mutations: {
     getHouse(state, payload){
       state.house = payload
+    },
+    getAction(state, payload){
+      state.action = payload
     }
   },
   actions: {

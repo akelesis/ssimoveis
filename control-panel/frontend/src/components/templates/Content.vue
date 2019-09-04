@@ -37,9 +37,14 @@ export default {
     .menu-toggle{
         border: none;
         position: absolute;
+        height: 50px;
+        width: 70px;
+        border-end-end-radius: 10px;
+        border-start-end-radius: 10px;
         left: 300px;
         justify-self: flex-start;
-        background-color: #aaa;
+        background-color: #bbb;
+        box-shadow: 1px 1px 3px #666;
     }
     .moveback{
         left: 0;

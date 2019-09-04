@@ -21,7 +21,9 @@
     <router-link to="/regnews" class="menu-link">
       <div class="menu-item">Notícias</div>
     </router-link>
-
+    <router-link to="/carousel" class="menu-link">
+      <div class="menu-item">Carrossel</div>
+    </router-link>
     
   </div>
 </template>

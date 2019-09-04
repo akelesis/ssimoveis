@@ -42,10 +42,13 @@ module.exports = app => {
     }
 
     const getById = (req, res) => {
+        console.log('chegou aqui')
         app.db('action-pics')
-            .where({ id: req.params.id })
-            .first()
-            .then(house => res.json(house))
+            .where({ idAction: req.params.id })
+            .then(house => {
+                console.log(req.params.id)
+                res.json(house)
+            })
     }
 
     return { save, remove, getById, get }

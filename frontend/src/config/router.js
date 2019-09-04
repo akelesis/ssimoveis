@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../views/Home.vue'
+import Action from '../views/ActionDetails.vue'
 
 Vue.use(Router)
 
@@ -45,6 +46,12 @@ export default new Router({
       path: '/casa',
       name: 'casa',
       component: () => import('../views/HouseDetails.vue')
-    }
+    },
+    {
+      path: '/action',
+      name: 'action',
+      component: Action
+    },
+
   ]
 })

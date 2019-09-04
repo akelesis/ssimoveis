@@ -68,4 +68,17 @@ module.exports = app => {
     app.route('/actionPics')
         .post(app.api.actionsPics.save)
         .get(app.api.actionsPics.get)
+
+    app.route('/actionPics/:id')
+        .get(app.api.actionsPics.getById)
+        .delete(app.api.actionsPics.remove)
+
+    app.route('/carousel')
+        .post(app.api.carousel.save)
+        .get(app.api.carousel.get)
+    
+    app.route('/carousel/:id')
+        .get(app.api.carousel.getById)
+        .delete(app.api.carousel.remove)
+
 }
