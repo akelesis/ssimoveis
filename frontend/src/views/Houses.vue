@@ -6,7 +6,7 @@
       <div class="house-cards-content" v-if="ready">
         <div
           class="house-cards"
-          v-for="house in houses"
+          v-for="house in filteredHouses"
           :key="house.id"
           @click="HousePage(house)"
         >
@@ -47,7 +47,8 @@ export default {
   },
   data() {
     return {
-      ready: false
+      ready: false,
+      filteredHouses: []
     };
   },
   methods: {
@@ -63,6 +64,7 @@ export default {
         .get(`${baseApiUrl}/houses`)
         .then(res => {
           this.$store.state.houses = res.data;
+          this.filteredHouses = this.$store.state.houses
         })
         .catch(err => console.log(err));
 
@@ -75,6 +77,7 @@ export default {
             .get(`${baseApiUrl}/housePics/${this.houses[i].id}`)
             .then(res => {
               this.houses[i].img = res.data[0].url;
+              this.filterHouses[i].img = this.houses[i].img
               console.log(res.data);
             })
             .catch(err => console.log(err));
@@ -85,10 +88,56 @@ export default {
         this.ready = true;
         console.log("ready!");
       }, 1500);
+    },
+    filterHouses(){
+      if(this.research.imovel != undefined){
+        this.filteredHouses =  this.filteredHouses.filter(house => {
+          return house.imovel = this.research.imovel
+        })
+        /* for(let i = 0; i < this.filteredHouses.length; i++){
+          if(this.filteredHouses[i].imovel != this.research.imovel){
+            this.filteredHouses.splice(i, 1)
+            i--
+          }
+        } */
+      }
+      if(this.research.min != undefined && this.research.max != undefined){
+        this.filteredHouses = this.filteredHouses.filter(house => {
+          return house >= this.research.min && house <= this.research.max
+        })
+        /* for(let i = 0; i < this.filteredHouses.length; i++){
+          if(this.filteredHouses[i].price >= this.research.min || this.filteredHouses[i].price <= this.research.max){
+            this.filteredHouses.splice(i, 1)
+            i--
+          } 
+        }*/
+      }
+      if(this.research.max != undefined){
+        this.filteredHouses = this.filterHouses.filter(house => {
+          return house <= this.research.max
+        })
+        /* for(let i = 0; i < this.filteredHouses.length; i++){
+          if(this.filteredHouses[i].price <= this.research.max){
+            this.filteredHouses.splice(i, 1)
+            i--
+          }
+        } */
+      }
+      if(this.research.neighborhood != undefined){
+        this.filteredHouses = this.filteredHouses.filter(house => {
+          return house.neighborhood === this.research.neighborhood
+        })
+      }
+      if(this.research.type != undefined){
+        this.filteredHouses = this.filteredHouses.filter(house => {
+          return house.type === this.research.transaction
+        })
+      }
     }
   },
   mounted() {
-    this.loadHouses();
+    this.loadHouses()
+    this.filterHouses()
   },
   computed: {
     houses() {

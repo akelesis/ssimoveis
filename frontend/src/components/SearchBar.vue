@@ -52,7 +52,8 @@ export default {
   },
   methods: {
     Research(){
-      console.log(this.research)
+      console.log({...this.research})
+      this.$router.push({path: '/imoveis'})
     }
   },
   computed: {
